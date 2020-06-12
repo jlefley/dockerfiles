@@ -10,7 +10,12 @@ apk update
 apk add postgresql
 
 # install s3 tools
-apk add python3 py3-pip
+# specifiy dependencies needed by awscli
+# otherwise they get removed when pip in uninstalled
+apk add python3 py3-pip \
+  py3-colorama \
+  py3-urllib3 \
+  py3-six
 pip install awscli
 apk del py3-pip
 
