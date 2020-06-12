@@ -8,8 +8,8 @@ if [ "${S3_ACCESS_KEY_ID}" = "**None**" ]; then
   exit 1
 fi
 
-if [ "${S3_SECRET_ACCESS_KEY}" = "**None**" ]; then
-  echo "You need to set the S3_SECRET_ACCESS_KEY environment variable."
+if [ "${S3_SECRET_ACCESS_KEY}" = "**None**" -a "${S3_SECRET_ACCESS_KEY_FILE}" = "**None**"]; then
+  echo "You need to set the S3_SECRET_ACCESS_KEY or S3_SECRET_ACCESS_KEY_FILE environment variable."
   exit 1
 fi
 
@@ -51,8 +51,16 @@ fi
 
 # env vars needed for aws tools
 export AWS_ACCESS_KEY_ID=$S3_ACCESS_KEY_ID
-export AWS_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY
 export AWS_DEFAULT_REGION=$S3_REGION
+
+if [ "${S3_SECRET_ACCESS_KEY_FILE}" = "**None**" ]; then
+  export AWS_SECRET_ACCESS_KEY="${S3_SECRET_ACCESS_KEY}"
+elif [ -r "${S3_SECRET_ACCESS_KEY_FILE}" ]; then
+  export AWS_SECRET_ACCESS_KEY=$(cat "${S3_SECRET_ACCESS_KEY_FILE}")
+else
+  echo "Missing S3_SECRET_ACCESS_KEY_FILE file."
+  exit 1
+fi
 
 if [ "${POSTGRES_PASSWORD_FILE}" = "**None**" ]; then
   export PGPASSWORD="${POSTGRES_PASSWORD}"
