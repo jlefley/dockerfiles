@@ -8,7 +8,7 @@ if [ "${S3_ACCESS_KEY_ID}" = "**None**" ]; then
   exit 1
 fi
 
-if [ "${S3_SECRET_ACCESS_KEY}" = "**None**" -a "${S3_SECRET_ACCESS_KEY_FILE}" = "**None**"]; then
+if [ "${S3_SECRET_ACCESS_KEY}" = "**None**" -a "${S3_SECRET_ACCESS_KEY_FILE}" = "**None**" ]; then
   echo "You need to set the S3_SECRET_ACCESS_KEY or S3_SECRET_ACCESS_KEY_FILE environment variable."
   exit 1
 fi
@@ -79,6 +79,6 @@ pg_dump $POSTGRES_HOST_OPTS $POSTGRES_DB | gzip > dump.sql.gz
 
 echo "Uploading dump to $S3_BUCKET"
 
-cat dump.sql.gz | aws $AWS_ARGS s3 cp - s3://$S3_BUCKET/$S3_PREFIX/${POSTGRES_DB}_$(date +"%Y-%m-%dT%H:%M:%SZ").sql.gz || exit 2
+cat dump.sql.gz | aws $AWS_ARGS s3 cp - s3://$S3_BUCKET/$S3_PATH/${POSTGRES_DB}_$(date +"%Y-%m-%dT%H:%M:%SZ").sql.gz || exit 2
 
 echo "SQL backup uploaded successfully"
